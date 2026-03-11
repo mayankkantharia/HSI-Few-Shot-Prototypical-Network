@@ -1,0 +1,11 @@
+/Papers
+/Datasets
+/.ipynb_checkpoints
+**.rar
+/Saves
+/env
+/.vscode
+/saves
+./lib/__pycache__
+**/__pycache__/
+**.h5
