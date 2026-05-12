@@ -1,13 +1,28 @@
 # Stable Prototypical Networks for Hyperspectral Few-Shot Classification
 
-This repository contains our end-to-end major project work on few-shot hyperspectral image classification using Stable Prototypical Networks (SPN), including baseline implementations, architecture trials, ablation studies, and experiment reports.
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white) ![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white) ![Jupyter](https://img.shields.io/badge/Jupyter-F37626?style=for-the-badge&logo=jupyter&logoColor=white)
 
-The work is organized in two phases:
+End-to-end major project work on few-shot hyperspectral image (HSI) classification using Stable Prototypical Networks (SPN). The repository spans baseline implementations, encoder variants, ablation studies, and experiment reports across two academic batches.
+
+**Batches**
 
 - Batch 2023: baseline SPN implementation, original study artifacts, and supporting documents.
 - Batch 2024: improved experimentation pipeline, encoder variants, tuning/testing notebooks, and large ablation outputs.
 
-## What This Project Solves
+## Table of Contents
+
+- [Problem](#problem)
+- [Datasets](#datasets)
+- [Methodology](#methodology)
+- [Results and Outputs](#results-and-outputs)
+- [Project Structure](#project-structure)
+- [How to Run](#how-to-run)
+- [Reproducibility Notes](#reproducibility-notes)
+- [Project Background](#project-background)
+- [Citation](#citation)
+- [License and Academic Use](#license-and-academic-use)
+
+## Problem
 
 Hyperspectral image (HSI) classification typically requires many labeled samples, which are expensive to collect. This project studies how SPN-style few-shot learning can improve classification when only a small number of labeled examples per class are available.
 
@@ -19,46 +34,55 @@ Core ideas explored in this repository:
 - Encoder variants with and without self-attention.
 - Ablation studies across train/tune epoch schedules and shot settings.
 
-## Repository Layout
+## Methodology
 
-- [Major Project Batch 2023](Major%20Project%20Batch%202023/)
-- [Major Project Batch 2024](Major%20Project%20Batch%202024/)
+### Phase 1 - Data Preparation
 
-Important subfolders:
+- Load and preprocess HSI `.mat` datasets with PCA and patch extraction
+- Standardize configuration across experiments (window size, PCA components)
 
-- [Major Project Batch 2023/Code/SPN-main](Major%20Project%20Batch%202023/Code/SPN-main/): original SPN reference implementation and paper-linked README.
-- [Major Project Batch 2023/Dataset](Major%20Project%20Batch%202023/Dataset/): benchmark HSI `.mat` datasets used in early phase experiments.
-- [Major Project Batch 2024/encoders](Major%20Project%20Batch%202024/encoders/): encoder architecture variants (`conv_gan`, `conv_sa`, `conv_no_sa`, etc.).
-- [Major Project Batch 2024/lib](Major%20Project%20Batch%202024/lib/): reusable training, data, prediction, and metrics utilities.
-- [Major Project Batch 2024/ablation](Major%20Project%20Batch%202024/ablation/), [ablation_fresh](Major%20Project%20Batch%202024/ablation_fresh/), [ablation_review](Major%20Project%20Batch%202024/ablation_review/): experiment sweeps and organized outputs.
-- [Major Project Batch 2024/Reports](Major%20Project%20Batch%202024/Reports/): timestamped evaluation reports (accuracy, kappa, per-class metrics).
+### Phase 2 - Few-Shot Training and Evaluation
 
-## Main Notebooks (Batch 2024)
+- Episodic training for N-way K-shot classification
+- Encoder variants with and without self-attention
+- Temperature scaling (`tau`) sensitivity experiments
+- Ablation runs across train/tune epoch schedules and shot settings
 
-- [SPN_5Shot_MT.ipynb](Major%20Project%20Batch%202024/SPN_5Shot_MT.ipynb): multi-train workflow.
-- [SPN_5Shot_Tune.ipynb](Major%20Project%20Batch%202024/SPN_5Shot_Tune.ipynb): training plus tuning workflow.
-- [SPN_5Shot_TEST.ipynb](Major%20Project%20Batch%202024/SPN_5Shot_TEST.ipynb): testing/evaluation-focused run.
-- [SPN_5Shot_TAU.ipynb](Major%20Project%20Batch%202024/SPN_5Shot_TAU.ipynb): temperature (`tau`) sensitivity experiments.
-- [SPN_5Shot_OG.ipynb](Major%20Project%20Batch%202024/SPN_5Shot_OG.ipynb): baseline comparison notebook.
+## Results and Outputs
 
-## Typical Experiment Flow
+Typical artifacts include:
 
-1. Load and preprocess HSI dataset (`.mat`) with PCA and patch extraction.
-2. Select encoder variant from [encoders](Major%20Project%20Batch%202024/encoders/).
-3. Run episodic training (few-shot episodes).
-4. Run tuning/fine-tuning for target classes (if enabled).
-5. Evaluate on test episodes and generate reports.
+- Overall Accuracy (OA), Average Accuracy (AA), and Kappa score
+- Per-class precision/recall/F1 classification reports
+- Confusion matrices
+- Optional saved model checkpoints
+- Timestamped text reports in [Major Project Batch 2024/Reports](Major%20Project%20Batch%202024/Reports/)
 
-Common hyperparameter knobs in notebooks:
+## Project Structure
 
-- Patch/window size
-- PCA components
-- Train/tune/test way-shot-query configuration
-- Train/tune/test epochs
-- Learning rate
-- Temperature scaling (`tau`)
+```
+Major Project Engineering/
+├── README.md
+├── Major Project Batch 2023/
+│   ├── Code/
+│   │   └── SPN-main/                        # original SPN reference implementation
+│   ├── Dataset/                             # benchmark HSI .mat datasets
+│   └── Architecture trials/
+└── Major Project Batch 2024/
+  ├── encoders/                            # encoder variants (conv_sa, conv_no_sa, etc.)
+  ├── lib/                                 # training, data, metrics utilities
+  ├── ablation/                            # experiment sweeps
+  ├── ablation_fresh/
+  ├── ablation_review/
+  ├── Reports/                             # timestamped evaluation reports
+  ├── SPN_5Shot_MT.ipynb
+  ├── SPN_5Shot_Tune.ipynb
+  ├── SPN_5Shot_TEST.ipynb
+  ├── SPN_5Shot_TAU.ipynb
+  └── SPN_5Shot_OG.ipynb
+```
 
-## Quick Start
+## How to Run
 
 ### 1) Create environment
 
@@ -110,14 +134,7 @@ Public dataset sources referenced by the baseline SPN repository:
 If you do not store datasets in the same local paths used during development, update notebook path variables before execution.
 
 ## Example Outputs
-
-Generated artifacts include:
-
-- Overall Accuracy (OA), Average Accuracy (AA), and Kappa score
-- Per-class precision/recall/F1 classification reports
-- Confusion matrices
-- Optional saved model checkpoints
-- Timestamped text reports in [Major Project Batch 2024/Reports](Major%20Project%20Batch%202024/Reports/)
+See the reports folder for concrete runs and metrics generated by each experiment.
 
 ## Reproducibility Notes
 
